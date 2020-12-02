@@ -17,6 +17,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import crawling_test.dto.DCarticle;
+import crawling_test.dto.naverNews;
 
 public class Main {
 
@@ -52,32 +53,33 @@ public class Main {
 		 */
 		
 		//원하는 사이트 주소 입력
-		driver.get("https://gall.dcinside.com/board/lists/?id=tree");
+		driver.get("https://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1=001");
 		
 		
 		//원하는 엘리먼트들 가져오기
 		//엘리먼트들의 계보를 확인해서 css선택자 방식으로 원하는 엘리먼트 지정
-		List<WebElement> elements = driver.findElements(By.cssSelector(".gall_list .us-post"));
+		List<WebElement> elements = driver.findElements(By.cssSelector(".type06_headline li"));
 		
 
 		//로딩 시간 부여
 		//설정된 millis초 단위 만큼 쉬는 것
 		Util.sleep(1000);
 		
-		System.out.println("== 디시인사이드 식물갤 게시물 최신글 리스트 ==");
-		System.out.println("번호 / 제목 / 작성자 / 작성일 / 조회수 / 추천수");
-		
+		System.out.println("== 네이버 뉴스 속보 리스트 ==");
 		
 		for(WebElement element : elements) {
-			String num = element.findElements(By.cssSelector(".gall_num")).get(0).getText().trim();
-			String title = element.findElements(By.cssSelector(".gall_tit")).get(0).getText().trim();
-			String name = element.findElements(By.cssSelector(".nickname")).get(0).getText().trim();
-			String date = element.findElements(By.cssSelector(".gall_date")).get(0).getText().trim();
-			String count = element.findElements(By.cssSelector(".gall_count")).get(0).getText().trim();
-			String recommend = element.findElements(By.cssSelector(".gall_recommend")).get(0).getText().trim();
+			String title = element.findElement(By.cssSelector("dt:not(.photo) > a")).getText();
+			String body = element.findElement(By.cssSelector("dd > .lede")).getText().trim();
+			String news = element.findElement(By.cssSelector("dd > .writing")).getText().trim();
+			String imgURL = element.findElement(By.cssSelector("dt.photo > a >img")).getAttribute("src");
+			/*
+			 * naverNews naverNews = new naverNews(title, body, news, imgURL);
+			 */
+			System.out.printf("제목 : %s\n",title);
+			System.out.printf("내용 : %s\n",body);
+			System.out.printf("신문사 : %s\n",news);
+			System.out.printf("이미지 : %s\n",imgURL);
 			
-			DCarticle article = new DCarticle(num, title, name, date, count, recommend);
-			System.out.printf("%s / %s / %s / %s / %s / %s \n",article.getNum(), article.getTitle(), article.getName(), article.getDate(), article.getCount(), article.getRecommend());
 		}
 
 		
